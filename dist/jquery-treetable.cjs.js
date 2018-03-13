@@ -1,16 +1,19 @@
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 /*
- * jQuery treetable Plugin 3.2.0
+ * jQuery treetable Plugin 3.2.2
  * http://ludo.cubicphuse.nl/jquery-treetable
  *
  * Copyright 2013, Ludo van den Boom
  * Dual licensed under the MIT or GPL Version 2 licenses.
  */
-(function($) {
-  "use strict";
+(function ($) {
 
   var Node, Tree, methods;
 
-  Node = (function() {
+  Node = function () {
     function Node(row, tree, settings) {
       var parentId;
 
@@ -37,11 +40,11 @@
       this.treeCell.wrapInner(this.cell);
     }
 
-    Node.prototype.addChild = function(child) {
+    Node.prototype.addChild = function (child) {
       return this.children.push(child);
     };
 
-    Node.prototype.ancestors = function() {
+    Node.prototype.ancestors = function () {
       var ancestors, node;
       node = this;
       ancestors = [];
@@ -51,7 +54,7 @@
       return ancestors;
     };
 
-    Node.prototype.collapse = function() {
+    Node.prototype.collapse = function () {
       if (this.collapsed()) {
         return this;
       }
@@ -68,13 +71,13 @@
       return this;
     };
 
-    Node.prototype.collapsed = function() {
+    Node.prototype.collapsed = function () {
       return this.row.hasClass("collapsed");
     };
 
     // TODO destroy: remove event handlers, expander, indenter, etc.
 
-    Node.prototype.expand = function() {
+    Node.prototype.expand = function () {
       if (this.expanded()) {
         return this;
       }
@@ -94,35 +97,35 @@
       return this;
     };
 
-    Node.prototype.expanded = function() {
+    Node.prototype.expanded = function () {
       return this.row.hasClass("expanded");
     };
 
-    Node.prototype.hide = function() {
+    Node.prototype.hide = function () {
       this._hideChildren();
       this.row.hide();
       return this;
     };
 
-    Node.prototype.isBranchNode = function() {
-      if(this.children.length > 0 || this.row.data(this.settings.branchAttr) === true) {
+    Node.prototype.isBranchNode = function () {
+      if (this.children.length > 0 || this.row.data(this.settings.branchAttr) === true) {
         return true;
       } else {
         return false;
       }
     };
 
-    Node.prototype.updateBranchLeafClass = function(){
+    Node.prototype.updateBranchLeafClass = function () {
       this.row.removeClass('branch');
       this.row.removeClass('leaf');
       this.row.addClass(this.isBranchNode() ? 'branch' : 'leaf');
     };
 
-    Node.prototype.level = function() {
+    Node.prototype.level = function () {
       return this.ancestors().length;
     };
 
-    Node.prototype.parentNode = function() {
+    Node.prototype.parentNode = function () {
       if (this.parentId != null) {
         return this.tree[this.parentId];
       } else {
@@ -130,18 +133,18 @@
       }
     };
 
-    Node.prototype.removeChild = function(child) {
+    Node.prototype.removeChild = function (child) {
       var i = $.inArray(child, this.children);
-      return this.children.splice(i, 1)
+      return this.children.splice(i, 1);
     };
 
-    Node.prototype.render = function() {
+    Node.prototype.render = function () {
       var handler,
           settings = this.settings,
           target;
 
       if (settings.expandable === true && this.isBranchNode()) {
-        handler = function(e) {
+        handler = function handler(e) {
           $(this).parents("table").treetable("node", $(this).parents("tr").data(settings.nodeIdAttr)).toggle();
           return e.preventDefault();
         };
@@ -150,26 +153,26 @@
         target = settings.clickableNodeNames === true ? this.treeCell : this.expander;
 
         target.off("click.treetable").on("click.treetable", handler);
-        target.off("keydown.treetable").on("keydown.treetable", function(e) {
+        target.off("keydown.treetable").on("keydown.treetable", function (e) {
           if (e.keyCode == 13) {
             handler.apply(this, [e]);
           }
         });
       }
 
-      this.indenter[0].style.paddingLeft = "" + (this.level() * settings.indent) + "px";
+      this.indenter[0].style.paddingLeft = "" + this.level() * settings.indent + "px";
 
       return this;
     };
 
-    Node.prototype.reveal = function() {
+    Node.prototype.reveal = function () {
       if (this.parentId != null) {
         this.parentNode().reveal();
       }
       return this.expand();
     };
 
-    Node.prototype.setParent = function(node) {
+    Node.prototype.setParent = function (node) {
       if (this.parentId != null) {
         this.tree[this.parentId].removeChild(this);
       }
@@ -178,7 +181,7 @@
       return node.addChild(this);
     };
 
-    Node.prototype.show = function() {
+    Node.prototype.show = function () {
       if (!this.initialized) {
         this._initialize();
       }
@@ -189,7 +192,7 @@
       return this;
     };
 
-    Node.prototype.toggle = function() {
+    Node.prototype.toggle = function () {
       if (this.expanded()) {
         this.collapse();
       } else {
@@ -198,7 +201,7 @@
       return this;
     };
 
-    Node.prototype._hideChildren = function() {
+    Node.prototype._hideChildren = function () {
       var child, _i, _len, _ref, _results;
       _ref = this.children;
       _results = [];
@@ -209,7 +212,7 @@
       return _results;
     };
 
-    Node.prototype._initialize = function() {
+    Node.prototype._initialize = function () {
       var settings = this.settings;
 
       this.render();
@@ -227,7 +230,7 @@
       return this.initialized = true;
     };
 
-    Node.prototype._showChildren = function() {
+    Node.prototype._showChildren = function () {
       var child, _i, _len, _ref, _results;
       _ref = this.children;
       _results = [];
@@ -239,9 +242,9 @@
     };
 
     return Node;
-  })();
+  }();
 
-  Tree = (function() {
+  Tree = function () {
     function Tree(table, settings) {
       this.table = table;
       this.settings = settings;
@@ -252,7 +255,7 @@
       this.roots = [];
     }
 
-    Tree.prototype.collapseAll = function() {
+    Tree.prototype.collapseAll = function () {
       var node, _i, _len, _ref, _results;
       _ref = this.nodes;
       _results = [];
@@ -263,7 +266,7 @@
       return _results;
     };
 
-    Tree.prototype.expandAll = function() {
+    Tree.prototype.expandAll = function () {
       var node, _i, _len, _ref, _results;
       _ref = this.nodes;
       _results = [];
@@ -282,7 +285,7 @@
       }
     };
 
-    Tree.prototype.loadRows = function(rows) {
+    Tree.prototype.loadRows = function (rows) {
       var node, row, i;
 
       if (rows != null) {
@@ -310,7 +313,7 @@
       return this;
     };
 
-    Tree.prototype.move = function(node, destination) {
+    Tree.prototype.move = function (node, destination) {
       // Conditions:
       // 1: +node+ should not be inserted as a child of +node+ itself.
       // 2: +destination+ should not be the same as +node+'s current parent (this
@@ -330,17 +333,17 @@
         }
       }
 
-      if(nodeParent){
+      if (nodeParent) {
         nodeParent.updateBranchLeafClass();
       }
-      if(node.parentNode()){
+      if (node.parentNode()) {
         node.parentNode().updateBranchLeafClass();
       }
       node.updateBranchLeafClass();
       return this;
     };
 
-    Tree.prototype.removeNode = function(node) {
+    Tree.prototype.removeNode = function (node) {
       // Recursively remove all descendants of +node+
       this.unloadBranch(node);
 
@@ -357,9 +360,9 @@
       this.nodes.splice($.inArray(node, this.nodes), 1);
 
       return this;
-    }
+    };
 
-    Tree.prototype.render = function() {
+    Tree.prototype.render = function () {
       var root, _i, _len, _ref;
       _ref = this.roots;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -372,7 +375,7 @@
       return this;
     };
 
-    Tree.prototype.sortBranch = function(node, sortFun) {
+    Tree.prototype.sortBranch = function (node, sortFun) {
       // First sort internal array of children
       node.children.sort(sortFun);
 
@@ -382,7 +385,7 @@
       return this;
     };
 
-    Tree.prototype.unloadBranch = function(node) {
+    Tree.prototype.unloadBranch = function (node) {
       // Use a copy of the children array to not have other functions interfere
       // with this function if they manipulate the children array
       // (eg removeNode).
@@ -401,8 +404,9 @@
       return this;
     };
 
-    Tree.prototype._moveRows = function(node, destination) {
-      var children = node.children, i;
+    Tree.prototype._moveRows = function (node, destination) {
+      var children = node.children,
+          i;
 
       node.row.insertAfter(destination.row);
       node.render();
@@ -415,16 +419,16 @@
     };
 
     // Special _moveRows case, move children to itself to force sorting
-    Tree.prototype._sortChildRows = function(parentNode) {
+    Tree.prototype._sortChildRows = function (parentNode) {
       return this._moveRows(parentNode, parentNode);
     };
 
     return Tree;
-  })();
+  }();
 
   // jQuery Plugin
   methods = {
-    init: function(options, force) {
+    init: function init(options, force) {
       var settings;
 
       settings = $.extend({
@@ -450,8 +454,9 @@
         onNodeInitialized: null
       }, options);
 
-      return this.each(function() {
-        var el = $(this), tree;
+      return this.each(function () {
+        var el = $(this),
+            tree;
 
         if (force || el.data("treetable") === undefined) {
           tree = new Tree(this, settings);
@@ -468,18 +473,18 @@
       });
     },
 
-    destroy: function() {
-      return this.each(function() {
+    destroy: function destroy() {
+      return this.each(function () {
         return $(this).removeData("treetable").removeClass("treetable");
       });
     },
 
-    collapseAll: function() {
+    collapseAll: function collapseAll() {
       this.data("treetable").collapseAll();
       return this;
     },
 
-    collapseNode: function(id) {
+    collapseNode: function collapseNode(id) {
       var node = this.data("treetable").tree[id];
 
       if (node) {
@@ -491,12 +496,12 @@
       return this;
     },
 
-    expandAll: function() {
+    expandAll: function expandAll() {
       this.data("treetable").expandAll();
       return this;
     },
 
-    expandNode: function(id) {
+    expandNode: function expandNode(id) {
       var node = this.data("treetable").tree[id];
 
       if (node) {
@@ -512,14 +517,15 @@
       return this;
     },
 
-    loadBranch: function(node, rows) {
+    loadBranch: function loadBranch(node, rows) {
       var settings = this.data("treetable").settings,
           tree = this.data("treetable").tree;
 
       // TODO Switch to $.parseHTML
       rows = $(rows);
 
-      if (node == null) { // Inserting new root nodes
+      if (node == null) {
+        // Inserting new root nodes
         this.append(rows);
       } else {
         var lastNode = this.data("treetable").findLastNode(node);
@@ -529,7 +535,7 @@
       this.data("treetable").loadRows(rows);
 
       // Make sure nodes are properly initialized
-      rows.filter("tr").each(function() {
+      rows.filter("tr").each(function () {
         tree[$(this).data(settings.nodeIdAttr)].show();
       });
 
@@ -541,7 +547,7 @@
       return this;
     },
 
-    move: function(nodeId, destinationId) {
+    move: function move(nodeId, destinationId) {
       var destination, node;
 
       node = this.data("treetable").tree[nodeId];
@@ -551,11 +557,11 @@
       return this;
     },
 
-    node: function(id) {
+    node: function node(id) {
       return this.data("treetable").tree[id];
     },
 
-    removeNode: function(id) {
+    removeNode: function removeNode(id) {
       var node = this.data("treetable").tree[id];
 
       if (node) {
@@ -567,7 +573,7 @@
       return this;
     },
 
-    reveal: function(id) {
+    reveal: function reveal(id) {
       var node = this.data("treetable").tree[id];
 
       if (node) {
@@ -579,24 +585,23 @@
       return this;
     },
 
-    sortBranch: function(node, columnOrFunction) {
+    sortBranch: function sortBranch(node, columnOrFunction) {
       var settings = this.data("treetable").settings,
-          prepValue,
           sortFun;
 
       columnOrFunction = columnOrFunction || settings.column;
       sortFun = columnOrFunction;
 
       if ($.isNumeric(columnOrFunction)) {
-        sortFun = function(a, b) {
+        sortFun = function sortFun(a, b) {
           var extractValue, valA, valB;
 
-          extractValue = function(node) {
+          extractValue = function extractValue(node) {
             var val = node.row.find("td:eq(" + columnOrFunction + ")").text();
             // Ignore trailing/leading whitespace and use uppercase values for
             // case insensitive ordering
             return $.trim(val).toUpperCase();
-          }
+          };
 
           valA = extractValue(a);
           valB = extractValue(b);
@@ -611,16 +616,16 @@
       return this;
     },
 
-    unloadBranch: function(node) {
+    unloadBranch: function unloadBranch(node) {
       this.data("treetable").unloadBranch(node);
       return this;
     }
   };
 
-  $.fn.treetable = function(method) {
+  $.fn.treetable = function (method) {
     if (methods[method]) {
       return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if (typeof method === 'object' || !method) {
+    } else if ((typeof method === "undefined" ? "undefined" : _typeof(method)) === 'object' || !method) {
       return methods.init.apply(this, arguments);
     } else {
       return $.error("Method " + method + " does not exist on jQuery.treetable");
