@@ -1,5 +1,6 @@
+[![Build Status](https://travis-ci.org/priotas/jquery-treetable.svg?branch=priotas)](https://travis-ci.org/priotas/jquery-treetable)
+
 # jQuery treetable
-[![CDNJS](https://img.shields.io/cdnjs/v/jquery-treetable.svg)](https://cdnjs.com/libraries/jquery-treetable)
 
 jQuery treetable is a plugin for jQuery, the 'Write Less, Do More, JavaScript
 Library'. With this plugin you can display a tree in an HTML table, e.g. a
